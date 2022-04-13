@@ -1,59 +1,155 @@
 ﻿@model IEnumerable<Item>
 
 <div class="container p-3">
-   <div class="row pt-4">
+    <div class="row pt-4">
         <div class="col-6">
-             <h2 class="text-primary">Item List with Price</h2>
+            <h2 class="text-primary">Add New Item </h2>
         </div>
-   <div class="col-6 text-right">
-       <a asp-controller="Item" asp-action="Create" class="btn btn-primary">Add New Item</a>
+        <div class="col-6 text-right">
+            @*<a asp-controller="Item" asp-action="AddorEdit" class="btn btn-primary">Add New Item</a>*@
+            <a class="btn btn-success text-white" onclick="AddorEdit('@Url.Action("AddorEdit","Item",null)','New Item')">New</a>
+        </div>
     </div>
-</div>
     <br />
-    @if(Model.Count() >0)
-    {<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Id</th>
-      <th scope="col">Item Name</th>
-      <th scope="col">Item Price</th>
-    </tr>
-  </thead>
-  <tbody>
-      @foreach(var Expenses in Model)
-       {
-       <tr>
-      @*<th scope="row"></th>*@
-      <td width="35%">@Expenses.id</td>
-      <td width="35%">@Expenses.ItemName</td>
-      <td width="30%">Rs @Expenses.ItemPrice</td>
-      <td>
-          <div class="w-100 btn-group" role="group">
-         <a asp-controller="Item" asp-action="Update" asp-route-ID="@Expenses.id" class="btn btn-primary mx-1">Update</a>
-         <a asp-controller="Item" asp-action="Delete" asp-route-ID="@Expenses.id" class="btn btn-danger mx" id ="Delete">Delete</a>
+    @if (Model.Count() > 0)
+    {
+        <div class="col-6">
+            <h2 class="text-primary">Item Name with Item Price </h2>
+        </div>
 
-      </div>
-      </td>
-      
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Item Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @*<th scope="row"></th>*@
+                        <td width="35%">@item.id</td>
+                        <td width="35%">@item.ItemName</td>
+                        <td width="30%">Rs @item.ItemPrice</td>
+                        <td>
+                            <div class="w-100 btn-group" role="group">
+                                <a class="btn btn-success text-white" onclick="AddorEdit('@Url.Action("AddorEdit","Item",new {id=item.id})','New Item')">Update</a>
+                                @*<a asp-controller="Item" asp-action="AddorEdit" asp-route-ID="@Expenses.id" class="btn btn-primary mx-1">Update</a>*@
+                                <a class="btn btn-danger text-white" id="delete" data-bind="@item.id" @*onclick="deletefunction('@Url.Action("Delete","Item",new {id=item.id})')"*@>Delete</a>
+                                @*  <a asp-controller="Item" asp-action="Delete" asp-route-ID="@item.id" class="btn btn-danger mx" id ="Delete" onclick="MyDelete()">Delete</a>*@
 
-
-    </tr>
-       }
-                
-  </tbody>
-</table>
-      
-
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
 </div>
+<div class="modal" tabindex="-1" role="dialog" id="form-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
 
 
-@section Scripts{ 
-    <script>
+@section Scripts{
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script>
+        AddorEdit = (url, title) => {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function (res) {
+                $('#form-modal .modal-body').html(res);
+                $('#form-modal .modal-title').html(title);
+                $('#form-modal').modal('show');
 
-        $(document).ready(function () {
-            var output = document.getElementById('Delete');
-            output.src = $("#ProfilePictureURL").val();
-        })
-    </script>
+                $('.modal-dialog').draggable({
+                    handle: ".modal-header"
+                });
+
+                $("#form-modal .modal-body #AddorEditform").validate({
+                   rules:
+                     {
+                        ItemName: "required",
+                        ItemPrice: "required",
+                     },
+                   messages:
+                    {
+                        ItemName:"How can Item Name be empty if u gonna add new item LOL",
+                        ItemPrice:"Everything is worthy "
+                    },
+                    submitHandler:function(form)
+                    {
+                         var data = $(form).serialize();
+                              debugger
+                              $.ajax({
+                              type: "POST",
+                              url: '@Url.Action("AddorEdit")',
+                              data: data,
+                              dataType: 'json',
+                              success:function(response)
+                              {
+                                  debugger
+                                  if (response.success == true)
+                                       {
+                                           window.location.href = "/Item/Index";
+                                       }
+                                   else{
+                                          alert(response.responseText);
+                                       }
+
+                              },
+                               error: function ()
+                               {
+                                   alert("error");
+                               }
+                      });
+                    }
+                });
+            },
+             error:function()
+             {
+                  alert("Error");
+              }
+        });
+    }
+
+        $("#delete").click(function () {
+            if(confirm("Are you sure?")==true)
+            {
+            debugger
+                  var id= $(this).data("bind");
+                  var check = '@Url.Action("DeletePost")';
+                  $.ajax({
+                            type:"POST",
+                            url:'@Url.Action("DeletePost")',
+                            data: { id: id },
+                            dataType:"json",
+                            //contentType: "application/json; charset=utf-8",
+                            success:function(res){
+                               // debugger
+                                  // alert(res.responseText);
+                                    window.location.href="/Item/Index";
+                            },
+                            error:function(){
+                                alert("Error");
+                            }
+                  });
+                  }
+     });
+</script>
 }

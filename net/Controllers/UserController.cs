@@ -39,18 +39,21 @@ namespace net.Controllers
             }
             else return Json(new { success = false, responseText = "UserName already exist" });
         }
+
          public JsonResult getStudent(string id)
             {
                 List<User> students = new List<User>();
                 students = context.Users.ToList();
                 return Json(students);
             }
+
         public IActionResult Login()
-        {
-            return View();
-        }
+                 {
+                    return View();
+                 }
+
         [HttpPost]
-        public IActionResult Login([FromBody] User model)
+        public IActionResult Login([FromForm] User model)
         { 
             if(ModelState.IsValid)
             {
@@ -74,10 +77,6 @@ namespace net.Controllers
                 {
                     return Json(new { success = false, responseText = "UserName Doesnot Exists" });
                 }
-
-
-
-
             }
             else
             {
