@@ -399,3 +399,4 @@ C:\Users\sunday\Desktop\work\net\net\obj\Debug\net5.0\Razor\Views\Item\Index.csh
 C:\Users\sunday\Desktop\work\net\net\obj\Debug\net5.0\Razor\Views\Item\Delete.cshtml.g.cs
 C:\Users\sunday\Desktop\work\net\net\obj\Debug\net5.0\Razor\Views\Item\Update.cshtml.g.cs
 C:\Users\sunday\Desktop\work\net\net\obj\Debug\net5.0\Razor\Views\Item\test.cshtml.g.cs
+C:\Users\sunday\Desktop\work\net\net\obj\Debug\net5.0\Razor\Views\Item\AddorEdit.cshtml.g.cs

@@ -15,7 +15,7 @@
                 </div>
                 <div class="form-group col-md-5">
                     <label asp-for="Password"></label>
-                    <input asp-for="Password" class="form-control" id="Password" placeholder="Enter UserName" />
+                    <input asp-for="Password" class="form-control" id="Password" type="password" placeholder="Enter UserName" />
                     <span asp-validation-for="Password" class="text-danger"></span> @*for server side validation*@
                 </div>
                 <div class="form-group col-md-1">
@@ -27,8 +27,8 @@
             </div>
         </div>
     </div>
-    @*}*@
 </form>
+
 @section Scripts{
       <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 
@@ -91,48 +91,4 @@
              }); 
     </script>
 }
-@*
-@section Scripts
-{
-<script type="text/javascript">
-
-    $(document).ready(function() {
-       // LoadData();
-         $("#btnsubmit").click(function () {
-             //alert("");
-             debugger
-             var f=$('#formstd');
-             var data = f.serialize();
-             //var std = {};
-            // std.UserName = $("#UserName").val();
-             //std.Password = $("#Password").val();
-             $.ajax({
-                 type: 'POST',
-                 url: '/User/createStudent',
-                 data:JSON.stringify(data),
-                 dataType: 'json',
-                contentType: "application/json; charset=utf-8",  
-                 success: function (data) {
-
-                // success: function (response) {
-                     debugger;
-                     // console.log('the value of myVar was: '+ this.std.UserName);
-
-                   $("#UserName").val('');
-                   $("#Password").val('');
-
-                   alert("Data has been added successfully.");
-                     //LoadData();
-                 },
-                 error: function () {
-                     alert("Error while inserting data");
-                 }
-             });
-             return false;
-         });
-     });
-     
-
-</script>
-    }*@
 

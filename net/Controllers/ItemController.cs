@@ -16,7 +16,50 @@ namespace net.Controllers
             IEnumerable<Item> objlist = _db.Items;
             return View(objlist);
         }
-        public IActionResult Create()
+        public IActionResult AddorEdit(int id=0)
+        {
+            if (id == 0)
+            {
+                return View();
+            }
+            else {
+                var obj = _db.Items.Find(id);
+                if (obj == null)
+                {
+                    return NotFound();
+                }
+                return View(obj);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddorEdit(int id,Item obj )
+        {
+
+            if (ModelState.IsValid)
+            {
+                if (id == 0)
+                {
+                    _db.Items.Add(obj);
+                    _db.SaveChanges();
+                    return Json(new { success = true, responseText = "login successfull" });
+                   // return Json(new { success = true, responseText = "created" });
+                    //return RedirectToAction("Index");
+                }
+                else
+                {
+                    _db.Items.Update(obj);
+                    _db.SaveChanges();
+                     return Json(new { success = true, responseText = "updated" });
+                    //return RedirectToAction("Index");
+
+                }
+
+            }
+            return NotFound("not found");
+        }
+
+      /*  public IActionResult Create()
         {
             return View();
         }
@@ -29,11 +72,10 @@ namespace net.Controllers
                 _db.Items.Add(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
-
             }
             return View(obj);
-        }
-        public IActionResult Delete(int? id)
+        }*/
+/*        public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
@@ -46,7 +88,7 @@ namespace net.Controllers
             }
             return View(obj);
 
-        }
+        }*/
         [HttpPost]
         public IActionResult DeletePost(int? id)
         {
@@ -58,9 +100,10 @@ namespace net.Controllers
             }
             _db.Items.Remove(obj);
             _db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(new { success = true, responseText = "deleted" });
+            //return RedirectToAction("Index");
         }
-        public IActionResult Update(int? id)
+    /*    public IActionResult Update(int? id)
         {
             if (id == null || id == 0)
             {
@@ -84,6 +127,6 @@ namespace net.Controllers
                 return RedirectToAction("Index");
             }
             return View(obj);
-        }
+        }*/
     }
 }
